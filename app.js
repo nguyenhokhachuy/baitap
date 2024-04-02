@@ -19,7 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/api/v1', require('./routes/index'));
 
 
-mongoose.connect('mongodb://localhost:27017/NodeJsS3').then(function () {
+mongoose.connect('mongodb://localhost:27017/NodeJsHuy').then(function () {
   console.log("conneted");
 })
 // catch 404 and forward to error handler

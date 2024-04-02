@@ -69,7 +69,7 @@ router.post('/register', userValidator.checkChain(), async function (req, res, n
   }
 });
 
-router.post("/forgotPassword", async function (req, res, next) {
+router.post("/forgotPassword", userValidator.checkChain(), async function (req, res, next) {
   var user = await userModel.findOne({
     email: req.body.email
   })
@@ -93,7 +93,7 @@ router.post("/forgotPassword", async function (req, res, next) {
 
 })
 
-router.post("/ResetPassword/:token", async function (req, res, next) {
+router.post("/ResetPassword/:token", userValidator.checkChain(), async function (req, res, next) {
   var user = await userModel.findOne({
     resetPasswordToken: req.params.token
   })
@@ -113,5 +113,22 @@ router.post("/ResetPassword/:token", async function (req, res, next) {
 
 })
 
+router.post("/changePassword", checkLogin, userValidator.checkChain(), async function (req, res, next) {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return ResHelper.RenderRes(res, false, errors.array());
+  }
+
+  const user = req.user;
+
+  try {
+    user.password = req.body.password;
+    await user.save();
+
+    ResHelper.RenderRes(res, true, "Thay đổi mật khẩu thành công");
+  } catch (error) {
+    ResHelper.RenderRes(res, false, error.message);
+  }
+});
 
 module.exports = router;
