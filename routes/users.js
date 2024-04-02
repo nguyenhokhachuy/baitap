@@ -4,9 +4,10 @@ var userModel = require('../schemas/user')
 var ResHelper = require('../helper/ResponseHelper');
 var userValidator = require('../validators/user');
 var { validationResult } = require('express-validator');
+var checkLogin = require('../middlewares/checklogin')
+var checkAuthorize = require('../middlewares/checkauthorize');
 
-
-router.get('/', async function (req, res, next) {
+router.get('/', checkLogin, checkAuthorize("admin", "modifier", "user"), async function (req, res, next) {
   let users = await userModel.find({}).exec();
   ResHelper.RenderRes(res, true, users)
 });
